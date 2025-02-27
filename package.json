@@ -1,0 +1,17 @@
+{
+    "name": "thunderwpeconsole",
+    "version": "0.0.1",
+    "description": "Thunder WPE WebKit Console runner",
+    "main": "index.js",
+    "scripts": {
+        "test": "vitest",
+        "format": "prettier --write ."
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "prettier": "^3.5.2",
+        "vite": "^6.2.0",
+        "vitest": "^3.0.7"
+    }
+}
