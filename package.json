@@ -5,10 +5,10 @@
     "main": "index.js",
     "scripts": {
         "test": "vitest",
-        "format": "prettier --write ."
+        "prettier": "prettier --write ."
     },
-    "author": "",
-    "license": "ISC",
+    "author": "Wouter van Boesschoten",
+    "license": "Apache-2.0",
     "devDependencies": {
         "prettier": "^3.5.2",
         "vite": "^6.2.0",

@@ -3,12 +3,14 @@
  * @property {string} url - WebSocket server URL.
  * @property {number} [timeout=5000] - Connection timeout in milliseconds.
  * @property {string[]} [protocols=[]] - Subprotocols for the WebSocket connection.
- * 
+ *
  * @typedef {Object} WebSocketClient
  * @property {(options: WebSocketOptions) => Promise<void>} connect - Connects to a WebSocket server.
  * @property {(message: string | ArrayBuffer | Blob) => void} send - Sends a message to the WebSocket server.
  * @property {() => void} close - Closes the WebSocket connection and returns with the response data.
  * @property {(event: string, handler: Function) => void} on - Registers an event listener for WebSocket events.
+ * @property {(event: string, handler: Function) => void} off - Deregisters an event listener for WebSocket
+ * @property {() => boolean} isConnected - Returns true if the WebSocket connection is open.
  */
 
 /**
@@ -16,16 +18,9 @@
  * @returns {WebSocketClient} WebSocket client with methods for communication.
  */
 export function createWebSocketClient() {
-    /**
-     * @type {WebSocket | null}
-     */
     let socket = null;
     let events = new EventTarget();
-    /**
-     * @type {string | number | NodeJS.Timeout | undefined}
-     */
     let timeoutId = undefined;
-
 
     /**
      * Connects to a WebSocket server.
@@ -46,7 +41,7 @@ export function createWebSocketClient() {
                 resolve();
             };
 
-            const onError = (/** @type {Event} */ err) => {
+            const onError = (err) => {
                 if (!connected) reject(new Error('WebSocket connection failed'));
                 events.dispatchEvent(new CustomEvent('error', { detail: err }));
             };
@@ -55,7 +50,7 @@ export function createWebSocketClient() {
                 events.dispatchEvent(new Event('close'));
             };
 
-            const onMessage = (/** @type {{ data: any; }} */ message) => {
+            const onMessage = (message) => {
                 events.dispatchEvent(new CustomEvent('message', { detail: message.data }));
             };
 
@@ -110,5 +105,22 @@ export function createWebSocketClient() {
         events.addEventListener(event, (e) => handler(e));
     }
 
-    return { connect, send, close, on };
+    /**
+     * Deregister an event listener for WebSocket events.
+     * @param {string} event - Event name (e.g., "open", "message", "close", "error").
+     * @param {Function} handler - Callback function to handle the event.
+     */
+    function off(event, handler) {
+        events.removeEventListener(event, (e) => handler(e));
+    }
+
+    /**
+     * Is the websocket connected
+     * @returns {boolean} Returns true if the websocket is connected
+     */
+    function isConnected() {
+        return socket !== null && socket.readyState === WebSocket.OPEN;
+    }
+
+    return { connect, send, close, on, off, isConnected };
 }
