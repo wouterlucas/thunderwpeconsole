@@ -1,15 +1,14 @@
 import { createThunderSession } from './lib/thunderSession.js';
 import { createWebInspectorClient } from './lib/webInspector.js';
+import { delay } from './lib/util.js';
 
 /**
  * Creates a unified API layer for managing Thunder and WebInspector sessions
  *
  * Configuration object:
  * @typedef {Object} config - Configuration object.
- * @property {string} thunderUrl - WebSocket URL of the Thunder instance.
+ * @property {string} host - The host IP address or DNS name of the Thunder instance.
  * @property {string} callsign - Callsign for the module (e.g., "UX" or "Browser").
- * @property {string} targetUrl - Initial URL to launch in WebKit.
- * @property {string} webInspectorHost - IP address of the WebInspector.
  * @property {number} [webInspectorPort=9998] - Port for WebInspector.
  *
  * API object:
@@ -60,13 +59,13 @@ export function createThunderWebkitAPI(config, onEvent) {
         }
 
         thunderSession = createThunderSession({
-            url: config.thunderUrl,
+            host: config.host,
             callsign: config.callsign,
         });
 
         webInspector = createWebInspectorClient(
             {
-                hostIP: config.webInspectorHost,
+                hostIP: config.host,
                 port: config.webInspectorPort || 9998,
             },
             handleConsoleMessage
@@ -80,7 +79,7 @@ export function createThunderWebkitAPI(config, onEvent) {
             onEvent({
                 type: 'error',
                 source: 'Thunder',
-                message: 'Failed to start Thunder session',
+                message: 'Failed to start Thunder session: ' + error.message,
             });
         }
     }
@@ -96,18 +95,22 @@ export function createThunderWebkitAPI(config, onEvent) {
             return;
         }
 
-        try {
+        // try {
             await webInspector.disconnect();
             await thunderSession.stop();
+            await delay(1000);
             await thunderSession.start();
+            await delay(1000);
             await webInspector.connect();
             await thunderSession.resume();
+            await delay(1000);
             await thunderSession.setURL(url);
 
             onEvent({ type: 'url-launch', source: 'Thunder', message: `URL launched: ${url}` });
-        } catch (error) {
-            onEvent({ type: 'error', source: 'Thunder', message: 'Failed to launch URL' });
-        }
+            
+        // } catch (error) {
+        //     onEvent({ type: 'error', source: 'Thunder', message: 'Failed to launch URL: ' + error.message });
+        // }
     }
 
     /**

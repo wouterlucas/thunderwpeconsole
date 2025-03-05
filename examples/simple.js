@@ -1,4 +1,4 @@
-import { createThunderWebkitAPI } from "./thunderWebkitAPI.js";
+import { createThunderWebkitAPI } from "../src/index.js";
 
 // Event handler for logging session events
 function handleEvent(event) {
@@ -8,10 +8,9 @@ function handleEvent(event) {
 // Create a ThunderWebkitAPI instance
 const api = createThunderWebkitAPI(
   {
-    thunderUrl: "ws://localhost:9998",
+    host: "rpi.wouterlucas.com",
     callsign: "UX",
-    targetUrl: "https://example.com",
-    webInspectorHost: "192.168.1.100",
+    webInspectorPort: 10000,
   },
   handleEvent
 );
@@ -21,15 +20,15 @@ const api = createThunderWebkitAPI(
   await api.start();
 
   console.log("Launching new URL...");
-  await api.launch("https://new-url.com");
+  await api.launch("https://blits-demo.lightningjs.io/");
 
-  setTimeout(async () => {
-    console.log("Closing browser instance...");
-    await api.close();
-  }, 10000);
+  // setTimeout(async () => {
+  //   console.log("Closing browser instance...");
+  //   await api.close();
+  // }, 10000);
 
-  setTimeout(async () => {
-    console.log("Quitting session...");
-    await api.quit();
-  }, 20000);
+  // setTimeout(async () => {
+  //   console.log("Quitting session...");
+  //   await api.quit();
+  // }, 20000);
 })();

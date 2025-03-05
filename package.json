@@ -7,10 +7,11 @@
         "test": "vitest",
         "prettier": "prettier --write ."
     },
+    "type": "module",
     "author": "Wouter van Boesschoten",
     "license": "Apache-2.0",
     "devDependencies": {
-        "prettier": "^3.5.2",
+        "prettier": "^3.5.3",
         "vite": "^6.2.0",
         "vitest": "^3.0.7"
     }

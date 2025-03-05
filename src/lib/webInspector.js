@@ -24,11 +24,13 @@ export function createWebInspectorClient(config, onMessage) {
 
     /**
      * Handles incoming WebSocket messages.
-     * @param {string} data - The raw message from WebInspector.
+     * @param {CustomEvent} event - The raw message from WebInspector.
      */
-    function handleMessage(data) {
+    function handleMessage(event) {
+        if (!event || !event.detail) return;
+
         try {
-            const message = JSON.parse(data);
+            const message = JSON.parse(event.detail);
             if (message.method === 'Console.messageAdded' && message.params?.message?.text) {
                 onMessage(null, message.params.message.text);
             }
@@ -40,13 +42,12 @@ export function createWebInspectorClient(config, onMessage) {
     /**
      * Establishes a WebSocket connection to WebInspector.
      */
-    function connect() {
+    async function connect() {
         if (ws) disconnect();
 
         ws = createWebSocketClient();
         ws.connect({
-            url: `ws://${config.hostIP}:${config.port}/devtools/page/1`,
-            protocols: ['devtools'],
+            url: `ws://${config.hostIP}:${config.port}/socket/1/1/WebPage`
         });
 
         ws.on('open', () => {

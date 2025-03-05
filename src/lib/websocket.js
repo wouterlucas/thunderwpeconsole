@@ -42,7 +42,7 @@ export function createWebSocketClient() {
             };
 
             const onError = (err) => {
-                if (!connected) reject(new Error('WebSocket connection failed'));
+                if (!connected) reject(new Error('WebSocket connection failed', err));
                 events.dispatchEvent(new CustomEvent('error', { detail: err }));
             };
 
@@ -75,7 +75,6 @@ export function createWebSocketClient() {
      */
     function send(data) {
         if (socket && socket.readyState === WebSocket.OPEN) {
-            console.log('Sending data', data);
             socket.send(data);
         } else {
             throw new Error('WebSocket is not open');
