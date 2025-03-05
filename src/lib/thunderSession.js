@@ -130,7 +130,9 @@ export function createThunderSession(config) {
                             resolve(response);
                         }
                     }
-                } catch (_) {}
+                } catch (_) {
+                    wsClient.off('message', handleEvent);
+                }
             };
 
             wsClient.on('message', handleEvent);

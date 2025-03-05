@@ -22,13 +22,13 @@ const api = createThunderWebkitAPI(
   console.log("Launching new URL...");
   await api.launch("https://blits-demo.lightningjs.io/");
 
-  // setTimeout(async () => {
-  //   console.log("Closing browser instance...");
-  //   await api.close();
-  // }, 10000);
+  setTimeout(async () => {
+    console.log("Closing browser instance...");
+    await api.close();
+  }, 10000);
 
-  // setTimeout(async () => {
-  //   console.log("Quitting session...");
-  //   await api.quit();
-  // }, 20000);
+  setTimeout(async () => {
+    console.log("Quitting session...");
+    await api.quit();
+  }, 20000);
 })();

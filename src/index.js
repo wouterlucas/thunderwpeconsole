@@ -95,7 +95,7 @@ export function createThunderWebkitAPI(config, onEvent) {
             return;
         }
 
-        // try {
+        try {
             await webInspector.disconnect();
             await thunderSession.stop();
             await delay(1000);
@@ -108,9 +108,9 @@ export function createThunderWebkitAPI(config, onEvent) {
 
             onEvent({ type: 'url-launch', source: 'Thunder', message: `URL launched: ${url}` });
             
-        // } catch (error) {
-        //     onEvent({ type: 'error', source: 'Thunder', message: 'Failed to launch URL: ' + error.message });
-        // }
+        } catch (error) {
+            onEvent({ type: 'error', source: 'Thunder', message: 'Failed to launch URL: ' + error.message });
+        }
     }
 
     /**
